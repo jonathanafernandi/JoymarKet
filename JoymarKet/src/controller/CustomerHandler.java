@@ -184,4 +184,22 @@ public class CustomerHandler {
 		
         // Deduct customer balance
 		double newBalance = customer.getBalance() - totalAmount;
-		boolean balanceUpdated = Customer.updateBalance
+		boolean balanceUpdated = Customer.updateBalance(idCustomer, newBalance);
+		if (!balanceUpdated) {
+			return "Failed to update balance;";
+		}
+		
+		boolean cartCleared = CartItem.clearCart(idCustomer);
+		if (!cartCleared) {
+			return "Failed to clear cart.";
+		}
+		
+		System.out.println("Checkout successful: Order " + newOrder.getIdOrder() + ".");
+		return null;
+	}
+
+	public static Customer getCustomer(String idCustomer) {
+		return Customer.getCustomer(idCustomer);
+	}
+
+}

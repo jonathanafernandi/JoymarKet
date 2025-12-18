@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2025 at 12:20 PM
+-- Generation Time: Dec 18, 2025 at 04:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `joymarket`
 --
+CREATE DATABASE IF NOT EXISTS `joymarket` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `joymarket`;
 
 -- --------------------------------------------------------
 
@@ -27,10 +29,17 @@ SET time_zone = "+00:00";
 -- Table structure for table `admin`
 --
 
+DROP TABLE IF EXISTS `admin`;
 CREATE TABLE `admin` (
   `idAdmin` varchar(50) NOT NULL,
   `emergencyContact` varchar(13) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `admin`:
+--   `idAdmin`
+--       `user` -> `idUser`
+--
 
 --
 -- Dumping data for table `admin`
@@ -47,11 +56,20 @@ INSERT INTO `admin` (`idAdmin`, `emergencyContact`) VALUES
 -- Table structure for table `cartitem`
 --
 
+DROP TABLE IF EXISTS `cartitem`;
 CREATE TABLE `cartitem` (
   `idCustomer` varchar(50) NOT NULL,
   `idProduct` varchar(50) NOT NULL,
   `count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `cartitem`:
+--   `idCustomer`
+--       `customer` -> `idCustomer`
+--   `idProduct`
+--       `product` -> `idProduct`
+--
 
 --
 -- Dumping data for table `cartitem`
@@ -73,11 +91,18 @@ INSERT INTO `cartitem` (`idCustomer`, `idProduct`, `count`) VALUES
 -- Table structure for table `courier`
 --
 
+DROP TABLE IF EXISTS `courier`;
 CREATE TABLE `courier` (
   `idCourier` varchar(50) NOT NULL,
   `vehicleType` varchar(50) NOT NULL,
   `vehiclePlate` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `courier`:
+--   `idCourier`
+--       `user` -> `idUser`
+--
 
 --
 -- Dumping data for table `courier`
@@ -94,10 +119,17 @@ INSERT INTO `courier` (`idCourier`, `vehicleType`, `vehiclePlate`) VALUES
 -- Table structure for table `customer`
 --
 
+DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
   `idCustomer` varchar(50) NOT NULL,
   `balance` double DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `customer`:
+--   `idCustomer`
+--       `user` -> `idUser`
+--
 
 --
 -- Dumping data for table `customer`
@@ -114,11 +146,20 @@ INSERT INTO `customer` (`idCustomer`, `balance`) VALUES
 -- Table structure for table `delivery`
 --
 
+DROP TABLE IF EXISTS `delivery`;
 CREATE TABLE `delivery` (
   `idOrder` varchar(50) NOT NULL,
   `idCourier` varchar(50) NOT NULL,
   `status` enum('Pending','In Progress','Delivered') DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `delivery`:
+--   `idOrder`
+--       `orderheader` -> `idOrder`
+--   `idCourier`
+--       `courier` -> `idCourier`
+--
 
 --
 -- Dumping data for table `delivery`
@@ -135,11 +176,20 @@ INSERT INTO `delivery` (`idOrder`, `idCourier`, `status`) VALUES
 -- Table structure for table `orderdetail`
 --
 
+DROP TABLE IF EXISTS `orderdetail`;
 CREATE TABLE `orderdetail` (
   `idOrder` varchar(50) NOT NULL,
   `idProduct` varchar(50) NOT NULL,
   `qty` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `orderdetail`:
+--   `idOrder`
+--       `orderheader` -> `idOrder`
+--   `idProduct`
+--       `product` -> `idProduct`
+--
 
 --
 -- Dumping data for table `orderdetail`
@@ -165,6 +215,7 @@ INSERT INTO `orderdetail` (`idOrder`, `idProduct`, `qty`) VALUES
 -- Table structure for table `orderheader`
 --
 
+DROP TABLE IF EXISTS `orderheader`;
 CREATE TABLE `orderheader` (
   `idOrder` varchar(50) NOT NULL,
   `idCustomer` varchar(50) NOT NULL,
@@ -173,6 +224,14 @@ CREATE TABLE `orderheader` (
   `orderedAt` datetime DEFAULT current_timestamp(),
   `totalAmount` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `orderheader`:
+--   `idCustomer`
+--       `customer` -> `idCustomer`
+--   `idPromo`
+--       `promo` -> `idPromo`
+--
 
 --
 -- Dumping data for table `orderheader`
@@ -191,6 +250,7 @@ INSERT INTO `orderheader` (`idOrder`, `idCustomer`, `idPromo`, `status`, `ordere
 -- Table structure for table `product`
 --
 
+DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `idProduct` varchar(50) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -198,6 +258,10 @@ CREATE TABLE `product` (
   `stock` int(11) NOT NULL,
   `category` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `product`:
+--
 
 --
 -- Dumping data for table `product`
@@ -231,12 +295,17 @@ INSERT INTO `product` (`idProduct`, `name`, `price`, `stock`, `category`) VALUES
 -- Table structure for table `promo`
 --
 
+DROP TABLE IF EXISTS `promo`;
 CREATE TABLE `promo` (
   `idPromo` varchar(50) NOT NULL,
   `code` varchar(20) NOT NULL,
   `headline` varchar(100) DEFAULT NULL,
   `discountPercentage` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `promo`:
+--
 
 --
 -- Dumping data for table `promo`
@@ -254,6 +323,7 @@ INSERT INTO `promo` (`idPromo`, `code`, `headline`, `discountPercentage`) VALUES
 -- Table structure for table `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `idUser` varchar(50) NOT NULL,
   `fullName` varchar(100) NOT NULL,
@@ -263,6 +333,10 @@ CREATE TABLE `user` (
   `address` text NOT NULL,
   `role` enum('Customer','Admin','Courier') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `user`:
+--
 
 --
 -- Dumping data for table `user`

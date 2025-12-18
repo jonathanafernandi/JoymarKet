@@ -253,6 +253,87 @@ public class AdminWindow {
 		return topBar;
 	}
 	
+	private static VBox createProductCardForAdmin(Product product, Stage stage, Admin admin) {
+		VBox card = new VBox(12);
+		card.setPadding(new Insets(15));
+		card.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 8;");
+		
+		Label nameLabel = new Label(product.getName());
+		nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+		
+		Label priceLabel = new Label("Price: Rp" + formatCurrency(product.getPrice()));
+		priceLabel.setFont(Font.font("Arial", 14));
+		
+		Label stockLabel = new Label("Stock: " + product.getStock());
+		stockLabel.setFont(Font.font("Arial", 14));
+		stockLabel.setTextFill(product.getStock() > 0 ? Color.GREEN : Color.RED);
+		
+		Label categoryLabel = new Label("Category: " + product.getCategory());
+		categoryLabel.setFont(Font.font("Arial", 12));
+		categoryLabel.setTextFill(Color.GRAY);
+		
+		HBox actionBox = new HBox(15);
+		actionBox.setAlignment(Pos.CENTER_LEFT);
+		
+		TextField stockField = new TextField(String.valueOf(product.getStock()));
+		stockField.setPrefWidth(100);
+		stockField.setPromptText("New stock");
+		
+		Button updateButton = new Button("Update Stock");
+		updateButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-padding: 8px 15px; -fx-cursor: hand;");
+		
+		updateButton.setOnAction(e -> {
+			try {
+				int newStock = Integer.parseInt(stockField.getText());
+				if (newStock < 0) {
+					showAlert(Alert.AlertType.ERROR, "Error", "Stock can not be negative.");
+					return;
+				}
+				
+				boolean success = product.editProductStock(newStock);
+				if (success) {
+					showAlert(Alert.AlertType.INFORMATION, "Success", "Stock updated!");
+					showManageProducts(stage, admin);
+				} else {
+					showAlert(Alert.AlertType.ERROR, "Error", "Failed to update stock.");
+				}
+			} catch (NumberFormatException e1) {
+				showAlert(Alert.AlertType.ERROR, "Error", "Invalid stock value.");
+			}
+		});
+		
+		actionBox.getChildren().addAll(new Label("Update stock:"), stockField, updateButton);
+		
+		card.getChildren().addAll(nameLabel, priceLabel, stockLabel, categoryLabel, new Separator(), actionBox);
+		return card;
+	}
+	
+	private static VBox createOrderCardForAdmin(OrderHeader order) {
+		VBox card = new VBox(10);
+		card.setPadding(new Insets(15));
+		card.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 8;");
+		
+		Label idLabel = new Label("Order ID: " + order.getIdOrder());
+		idLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+		
+		Label customerLabel = new Label("Customer ID: " + order.getIdCustomer());
+		customerLabel.setFont(Font.font("Arial", 12));
+		
+		Label dateLabel = new Label("Date: " + order.getOrderedAt().toString());
+		dateLabel.setFont(Font.font("Arial", 12));
+		
+		Label amountLabel = new Label("Total: Rp" + formatCurrency(order.getTotalAmount()));
+		amountLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+		amountLabel.setTextFill(Color.web("#2E7D32"));
+		
+		Label statusLabel = new Label("Status: " + order.getStatus());
+		statusLabel.setFont(Font.font("Arial", 12));
+		statusLabel.setTextFill(getStatusColor(order.getStatus()));
+		
+		card.getChildren().addAll(idLabel, customerLabel, dateLabel, amountLabel, statusLabel);
+		return card;
+	}
+	
 	// Helper method to create menu buttons
 	private static Button createMenuButton(String text, String color) {
 		Button button = new Button(text);

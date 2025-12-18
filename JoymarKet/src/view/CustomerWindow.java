@@ -37,83 +37,84 @@ import model.Customer;
 import model.OrderHeader;
 import model.Product;
 
-// Entry point for customer dashboard UI
-	public static void showCustomerDashboard(Stage stage, Customer customer) {
+public class CustomerWindow {
 
-			// Root layout using BorderPane (top, center, bottom layout)
-			BorderPane root = new BorderPane();
-			root.setStyle("-fx-background-color: #F5F5F5;");
+	// Entry point for customer dashboard UI
+	public static void showCustomerDashboard(Stage stage, Customer customer) {
+		// Root layout using BorderPane (top, center, bottom layout)
+		BorderPane root = new BorderPane();
+		root.setStyle("-fx-background-color: #F5F5F5;");
+
+		// Top navigation bar (logo + user info)
+		HBox topBar = createTopBar(stage, customer);
+		root.setTop(topBar);
+
+		// Main content container in the center
+		VBox centerBox = new VBox(25);
+		centerBox.setPadding(new Insets(40));
+		centerBox.setAlignment(Pos.CENTER);
+
+		// Welcome message using customer's name
+		Label welcomeLabel = new Label("Welcome, " + customer.getFullName() + "!");
+		welcomeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 28));
+
+		// Display current customer balance
+		Label balanceLabel = new Label("Balance: Rp" + formatCurrency(customer.getBalance()));
+		balanceLabel.setFont(Font.font("Arial", 16));
+		balanceLabel.setTextFill(Color.web("#555555"));
+
+		// Menu container for dashboard actions
+		VBox menuBox = new VBox(20);
+		menuBox.setAlignment(Pos.CENTER);
+
+		// Dashboard menu buttons
+		Button browseProductsButton = createMenuButton("Browse Products", "#4CAF50");
+		Button viewCartButton = createMenuButton("View Cart", "#2196F3");
+		Button myOrdersButton = createMenuButton("My Orders", "#FF9800");
+		Button topUpButton = createMenuButton("Top Up Balance", "#9C27B0");
+		Button editProfileButton = createMenuButton("Edit Profile", "#607D8B");
+		Button logoutButton = createMenuButton("Logout", "#F44336");
+
+		// Navigation logic for each menu option
+		browseProductsButton.setOnAction(e -> showBrowseProducts(stage, customer));
+		viewCartButton.setOnAction(e -> showCart(stage, customer));
+		myOrdersButton.setOnAction(e -> showOrders(stage, customer));
+		topUpButton.setOnAction(e -> showTopUpDialog(stage, customer));
+		editProfileButton.setOnAction(e -> UserWindow.showEditProfileWindow(stage, customer));
+
+		// Logout clears session and returns to login screen
+		logoutButton.setOnAction(e -> {
+			UserHandler.logout();
+			UserWindow.showLoginWindow(stage);
+		});
+
+		// Add all menu buttons to menu container
+		menuBox.getChildren().addAll(
+			browseProductsButton,
+			viewCartButton,
+			myOrdersButton,
+			topUpButton,
+			editProfileButton,
+			logoutButton
+		);
+
+		// Add main components to center layout
+		centerBox.getChildren().addAll(welcomeLabel, balanceLabel, menuBox);
+
+		// Wrap center content in ScrollPane for smaller screens
+		ScrollPane scrollPane = new ScrollPane(centerBox);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setStyle("-fx-background-color: #F5F5F5; -fx-background: #F5F5F5;");
+
+		// Set center content
+		root.setCenter(scrollPane);
+
+		// Final scene setup
+		Scene scene = new Scene(root, 900, 650);
+		stage.setScene(scene);
+	}
 	
-			// Top navigation bar (logo + user info)
-			HBox topBar = createTopBar(stage, customer);
-			root.setTop(topBar);
-	
-			// Main content container in the center
-			VBox centerBox = new VBox(25);
-			centerBox.setPadding(new Insets(40));
-			centerBox.setAlignment(Pos.CENTER);
-	
-			// Welcome message using customer's name
-			Label welcomeLabel = new Label("Welcome, " + customer.getFullName() + "!");
-			welcomeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 28));
-	
-			// Display current customer balance
-			Label balanceLabel = new Label("Balance: Rp" + formatCurrency(customer.getBalance()));
-			balanceLabel.setFont(Font.font("Arial", 16));
-			balanceLabel.setTextFill(Color.web("#555555"));
-	
-			// Menu container for dashboard actions
-			VBox menuBox = new VBox(20);
-			menuBox.setAlignment(Pos.CENTER);
-	
-			// Dashboard menu buttons
-			Button browseProductsButton = createMenuButton("Browse Products", "#4CAF50");
-			Button viewCartButton = createMenuButton("View Cart", "#2196F3");
-			Button myOrdersButton = createMenuButton("My Orders", "#FF9800");
-			Button topUpButton = createMenuButton("Top Up Balance", "#9C27B0");
-			Button editProfileButton = createMenuButton("Edit Profile", "#607D8B");
-			Button logoutButton = createMenuButton("Logout", "#F44336");
-	
-			// Navigation logic for each menu option
-			browseProductsButton.setOnAction(e -> showBrowseProducts(stage, customer));
-			viewCartButton.setOnAction(e -> showCart(stage, customer));
-			myOrdersButton.setOnAction(e -> showOrders(stage, customer));
-			topUpButton.setOnAction(e -> showTopUpDialog(stage, customer));
-			editProfileButton.setOnAction(e -> UserWindow.showEditProfileWindow(stage, customer));
-	
-			// Logout clears session and returns to login screen
-			logoutButton.setOnAction(e -> {
-				UserHandler.logout();
-				UserWindow.showLoginWindow(stage);
-			});
-	
-			// Add all menu buttons to menu container
-			menuBox.getChildren().addAll(
-				browseProductsButton,
-				viewCartButton,
-				myOrdersButton,
-				topUpButton,
-				editProfileButton,
-				logoutButton
-			);
-	
-			// Add main components to center layout
-			centerBox.getChildren().addAll(welcomeLabel, balanceLabel, menuBox);
-	
-			// Wrap center content in ScrollPane for smaller screens
-			ScrollPane scrollPane = new ScrollPane(centerBox);
-			scrollPane.setFitToWidth(true);
-			scrollPane.setStyle("-fx-background-color: #F5F5F5; -fx-background: #F5F5F5;");
-	
-			// Set center content
-			root.setCenter(scrollPane);
-	
-			// Final scene setup
-			Scene scene = new Scene(root, 900, 650);
-			stage.setScene(scene);
-		}
-		
-		// Displays the product browsing page for customers
+	// Displays the product browsing page for customers
 	private static void showBrowseProducts(Stage stage, Customer customer) {
 	
 		// Root layout for this page
@@ -826,6 +827,5 @@ import model.Product;
 			.getNumberInstance(new Locale("id", "ID"))
 			.format(amount);
 	}
-
 
 }

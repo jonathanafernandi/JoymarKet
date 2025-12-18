@@ -24,8 +24,7 @@ import model.User;
 
 public class UserWindow {
 
-		public static void showLoginWindow(Stage stage) {
-	
+	public static void showLoginWindow(Stage stage) {
 		// Root layout for the login page
 		VBox root = new VBox(20);
 		root.setPadding(new Insets(40));
@@ -127,7 +126,6 @@ public class UserWindow {
 		Scene scene = new Scene(root, 600, 700);
 		stage.setScene(scene);
 	}
-
 	
 	public static void showRegisterWindow(Stage stage) {
 	
@@ -244,9 +242,8 @@ public class UserWindow {
 		Scene scene = new Scene(root, 600, 700);
 		stage.setScene(scene);
 	}
-
 		
-		public static void showEditProfileWindow(Stage stage, User user) {
+	public static void showEditProfileWindow(Stage stage, User user) {
 	
 		// Root layout for the edit profile page
 		VBox root = new VBox(15);
@@ -382,6 +379,5 @@ public class UserWindow {
 		Scene scene = new Scene(scrollPane, 650, 650);
 		stage.setScene(scene);
 	}
-
 
 }

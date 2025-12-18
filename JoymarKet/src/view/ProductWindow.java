@@ -32,7 +32,7 @@ import model.Product;
 
 public class ProductWindow {
 
-		public static void showProductsForCustomer(Stage parentStage, Customer customer) {
+	public static void showProductsForCustomer(Stage parentStage, Customer customer) {
 	
 		// Create a new modal window for browsing products
 		Stage stage = new Stage();
@@ -191,10 +191,8 @@ public class ProductWindow {
 		stage.setScene(scene);
 		stage.show();
 	}
-
 	
-		public static void showProductsForAdmin(Stage parentStage) {
-	
+	public static void showProductsForAdmin(Stage parentStage) {
 		// Create admin product management window
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -257,9 +255,8 @@ public class ProductWindow {
 		stage.setScene(scene);
 		stage.show();
 	}
-
 	
-		private static HBox createProductCard(Product product, Customer customer, Stage stage) {
+	private static HBox createProductCard(Product product, Customer customer, Stage stage) {
 	
 		// Main horizontal container for a single product card
 		HBox card = new HBox(20);
@@ -360,10 +357,8 @@ public class ProductWindow {
 		card.getChildren().addAll(infoBox, spacer, actionBox);
 		return card;
 	}
-
 	
-		private static VBox createProductCardForAdmin(Product product, VBox parentList) {
-	
+	private static VBox createProductCardForAdmin(Product product, VBox parentList) {
 		// Main vertical container for admin product card
 		VBox card = new VBox(12);
 		card.setPadding(new Insets(15));
@@ -520,6 +515,5 @@ public class ProductWindow {
 				.getNumberInstance(new Locale("id", "ID"))
 				.format(amount);
 	}
-
 
 }

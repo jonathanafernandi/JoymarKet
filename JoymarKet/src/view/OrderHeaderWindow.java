@@ -400,10 +400,8 @@ public class OrderHeaderWindow {
 		// Show dialog and wait until user closes it
 		detailsDialog.showAndWait();
 	}
-	
 		
-		private static VBox createOrderCard(OrderHeader order, Stage parentStage) {
-	
+	private static VBox createOrderCard(OrderHeader order, Stage parentStage) {
 		// Main container for a single order card
 		VBox card = new VBox(15);
 		card.setPadding(new Insets(20));
@@ -512,9 +510,8 @@ public class OrderHeaderWindow {
 	
 		return card;
 	}
-
 	
-		private static VBox createOrderCardForAdmin(OrderHeader order, Stage parentStage) {
+	private static VBox createOrderCardForAdmin(OrderHeader order, Stage parentStage) {
 	
 		// Main container for admin order card
 		VBox card = new VBox(12);
@@ -612,7 +609,6 @@ public class OrderHeaderWindow {
 	
 		
 	private static String getStatusBackgroundColor(String status) {
-	
 		// Determine background color based on order status
 		switch (status) {
 	
@@ -638,6 +634,5 @@ public class OrderHeaderWindow {
 			.getNumberInstance(new Locale("id", "ID"))
 			.format(amount);
 	}
-   
 
 }
