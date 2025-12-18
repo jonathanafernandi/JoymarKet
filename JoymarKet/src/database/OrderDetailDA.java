@@ -9,14 +9,17 @@ import java.util.List;
 
 import model.OrderDetail;
 
+// Data Access class for OrderDetail table
 public class OrderDetailDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public OrderDetailDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get a specific order detail by order ID and product ID
 	public OrderDetail getOrderDetail(String idOrder, String idProduct) {
 		String query = "SELECT * FROM OrderDetail WHERE idOrder = ? AND idProduct = ?";
 		try {
@@ -25,8 +28,13 @@ public class OrderDetailDA {
 			ps.setString(2, idProduct);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create OrderDetail object if data is found
 			if (rs.next()) {
-				return new OrderDetail(rs.getString("idOrder"), rs.getString("idProduct"), rs.getInt("qty"));
+				return new OrderDetail(
+                    rs.getString("idOrder"),
+                    rs.getString("idProduct"),
+                    rs.getInt("qty")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting order detail.");
@@ -35,6 +43,7 @@ public class OrderDetailDA {
 		return null;
 	}
 	
+    // Get all order details for a specific order
 	public List<OrderDetail> getOrderDetails(String idOrder) {
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		String query = "SELECT * from OrderDetail WHERE idOrder = ?";
@@ -43,10 +52,14 @@ public class OrderDetailDA {
 			ps.setString(1, idOrder);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each order detail from result set
 			while (rs.next()) {
-				OrderDetail orderDetail = new OrderDetail(rs.getString("idOrder"), rs.getString("idProduct"), rs.getInt("qty"));
+				OrderDetail orderDetail = new OrderDetail(
+                    rs.getString("idOrder"),
+                    rs.getString("idProduct"),
+                    rs.getInt("qty")
+                );
 				orderDetails.add(orderDetail);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting order details.");
@@ -55,6 +68,7 @@ public class OrderDetailDA {
 		return orderDetails;
 	}
 	
+    // Get order detail for a customer order
 	public OrderDetail getCustomerOrderDetail(String idOrder, String idProduct) {
 		String query = "SELECT od.* FROM OrderDetail od JOIN OrderHeader oh ON od.idOrder = oh.idOrder WHERE od.idOrder = ? AND od.idProduct = ?";
 		try {
@@ -63,8 +77,13 @@ public class OrderDetailDA {
 			ps.setString(2, idProduct);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create OrderDetail object if data is found
 			if (rs.next()) {
-				return new OrderDetail(rs.getString("idOrder"), rs.getString("idProduct"), rs.getInt("qty"));
+				return new OrderDetail(
+                    rs.getString("idOrder"),
+                    rs.getString("idProduct"),
+                    rs.getInt("qty")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting customer order detail.");
@@ -73,6 +92,7 @@ public class OrderDetailDA {
 		return null;
 	}
 	
+    // Save new order detail into database
 	public boolean saveOrderDetail(OrderDetail orderDetail) {
 		String query = "INSERT INTO OrderDetail VALUES (?, ?, ?)";
 		try {
