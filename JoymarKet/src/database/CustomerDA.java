@@ -7,14 +7,17 @@ import java.sql.SQLException;
 
 import model.Customer;
 
+// Data Access class for Customer table
 public class CustomerDA {
 
 	private Connection connection;
 
+    // Initialize database connection
 	public CustomerDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get customer data by customer ID
 	public Customer getCustomer(String idCustomer) {
 		String query = "SELECT u.*, c.balance FROM User u JOIN Customer c ON u.idUser = c.idCustomer WHERE u.idUser = ?";
 		try {
@@ -22,8 +25,18 @@ public class CustomerDA {
 			ps.setString(1, idCustomer);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create Customer object if data is found
 			if (rs.next()) {
-				return new Customer(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("role"), rs.getDouble("balance"));
+				return new Customer(
+                    rs.getString("idUser"),
+                    rs.getString("fullName"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("role"),
+                    rs.getDouble("balance")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting customer: " + idCustomer + ".");
@@ -32,6 +45,7 @@ public class CustomerDA {
 		return null;
 	}
 	
+    // Save new customer data into database
 	public boolean saveCustomer(Customer customer) {
 		String query = "INSERT INTO Customer VALUES (?, ?)";
 		try {
@@ -51,6 +65,7 @@ public class CustomerDA {
 		return false;
 	}
 	
+    // Update customer balance
 	public boolean updateBalance(String idCustomer, double newBalance) {
 		String query = "UPDATE Customer SET balance = ? WHERE idCustomer = ?";
 		try {
@@ -70,6 +85,7 @@ public class CustomerDA {
 		return false;
 	}
 	
+    // Delete customer data from database
 	public boolean deleteCustomer(String idCustomer) {
 		String query = "DELETE FROM Customer WHERE idCustomer = ?";
 		try {
@@ -88,6 +104,7 @@ public class CustomerDA {
 		return false;
 	}
 	
+    // Generate new customer ID with CU prefix
 	public synchronized String generateCustomerID() {
 		try {
 			String query = "SELECT idCustomer FROM Customer WHERE idCustomer LIKE 'CU%' ORDER BY idCustomer DESC LIMIT 1";
@@ -96,6 +113,7 @@ public class CustomerDA {
 			
 			int nextNumber = 1;
 			
+            // Get last customer ID and increment it
 			if (rs.next()) {
 				String lastID = rs.getString("idCustomer");
 				String numberPart = lastID.substring(2);
@@ -103,10 +121,10 @@ public class CustomerDA {
 				nextNumber = currentNumber + 1;
 			}
 			
+            // Format ID to 3 digits
 			String formattedNumber = String.valueOf(nextNumber);
 			while (formattedNumber.length() < 3) {
 				formattedNumber = "0" + formattedNumber;
-				
 			}
 			
 			return "CU" + formattedNumber;
