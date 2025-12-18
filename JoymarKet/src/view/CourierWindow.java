@@ -28,7 +28,7 @@ import model.Delivery;
 
 // Courier dashboard and delivery management window
 public class CourierWindow {
-
+ 
 	// Show main courier dashboard
 	public static void showCourierDashboard(Stage stage, Courier courier) {
 		BorderPane root = new BorderPane();
