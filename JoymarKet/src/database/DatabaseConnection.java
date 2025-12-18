@@ -4,17 +4,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+// Singleton class to manage database connection
 public class DatabaseConnection {
 
 	private static DatabaseConnection instance;
 	private Connection connection;
 	
+    // Database configuration
 	private final String HOST = "localhost";
 	private final String PORT = "3306";
 	private final String DATABASE = "joymarket";
 	private final String USERNAME = "root";
 	private final String PASSWORD = "";
 	
+    // Private constructor to prevent multiple instances
 	private DatabaseConnection() {
 		try {
 			String url = String.format("jdbc:mysql://%s:%s/%s", HOST, PORT, DATABASE);
@@ -27,6 +30,7 @@ public class DatabaseConnection {
 		}
 	}
 	
+    // Get single instance of DatabaseConnection
 	public static DatabaseConnection getInstance() {
 		if (instance == null) {
 			instance = new DatabaseConnection();
@@ -34,6 +38,7 @@ public class DatabaseConnection {
 		return instance;
 	}
 	
+    // Get active database connection
 	public Connection getConnection() {
 		return connection;
 	}
