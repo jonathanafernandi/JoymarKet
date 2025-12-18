@@ -26,12 +26,15 @@ import javafx.stage.Stage;
 import model.Courier;
 import model.Delivery;
 
+// Courier dashboard and delivery management window
 public class CourierWindow {
 
+	// Show main courier dashboard
 	public static void showCourierDashboard(Stage stage, Courier courier) {
 		BorderPane root = new BorderPane();
 		root.setStyle("-fx-background-color: #F5F5F5;");
 		
+		// Top bar with courier info
 		HBox topBar = createTopBar(courier);
 		root.setTop(topBar);
 		
@@ -46,6 +49,7 @@ public class CourierWindow {
 		vehicleLabel.setFont(Font.font("Arial", 16));
 		vehicleLabel.setTextFill(Color.web("#555555"));
 		
+		// Menu buttons
 		VBox menuBox = new VBox(20);
 		menuBox.setAlignment(Pos.CENTER);
 		
@@ -53,6 +57,7 @@ public class CourierWindow {
 		Button editProfileButton = createMenuButton("Edit Profile", "#607D8B");
 		Button logoutButton = createMenuButton("Logout", "#F44336");
 		
+		// Button actions
 		viewDeliveriesButton.setOnAction(e -> showDeliveries(stage, courier));
 		editProfileButton.setOnAction(e -> UserWindow.showEditProfileWindow(stage, courier));
 		logoutButton.setOnAction(e -> {
@@ -61,14 +66,13 @@ public class CourierWindow {
 		});
 		
 		menuBox.getChildren().addAll(viewDeliveriesButton, editProfileButton, logoutButton);
-		
 		centerBox.getChildren().addAll(welcomeLabel, vehicleLabel, menuBox);
 		root.setCenter(centerBox);
 		
-		Scene scene = new Scene(root, 900, 650);
-		stage.setScene(scene);
+		stage.setScene(new Scene(root, 900, 650));
 	}
 	
+	// Show list of deliveries assigned to courier
 	private static void showDeliveries(Stage stage, Courier courier) {
 		BorderPane root = new BorderPane();
 		root.setStyle("-fx-background-color: #F5F5F5");
@@ -81,14 +85,18 @@ public class CourierWindow {
 		Label titleLabel = new Label("My Deliveries");
 		titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 26));
 		
+		// Load deliveries for courier
 		List<Delivery> deliveries = CourierHandler.getCourierDeliveries(courier.getIdUser());
 		
+		// If no deliveries yet
 		if (deliveries.isEmpty()) {
 			Label emptyLabel = new Label("No deliveries assigned yet.");
 			emptyLabel.setFont(Font.font("Arial", 16));
 			emptyLabel.setTextFill(Color.GRAY);
 			centerBox.getChildren().addAll(titleLabel, emptyLabel);
-		} else {
+		} 
+		// If deliveries exist
+		else {
 			ScrollPane scrollPane = new ScrollPane();
 			scrollPane.setFitToWidth(true);
 			
@@ -104,17 +112,17 @@ public class CourierWindow {
 			centerBox.getChildren().addAll(titleLabel, scrollPane);
 		}
 		
+		// Back button
 		Button backButton = new Button("Back to Dashboard");
-		backButton.setStyle("-fx-background-color: #607D8B; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-cursor: hand;");
 		backButton.setOnAction(e -> showCourierDashboard(stage, courier));
 		
 		centerBox.getChildren().add(backButton);
 		root.setCenter(centerBox);
 		
-		Scene scene = new Scene(root, 900, 650);
-		stage.setScene(scene);;
+		stage.setScene(new Scene(root, 900, 650));
 	}
 	
+	// Create top navigation bar for courier
 	private static HBox createTopBar(Courier courier) {
 		HBox topBar = new HBox(20);
 		topBar.setPadding(new Insets(15, 30, 15, 30));
@@ -136,14 +144,19 @@ public class CourierWindow {
 		return topBar;
 	}
 	
+	// Helper method to create menu buttons
 	private static Button createMenuButton(String text, String color) {
 		Button button = new Button(text);
-		button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: #FFFFFF; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 20px 40px; -fx-background-radius: 8; -fx-cursor: hand;");
+		button.setStyle(
+			"-fx-background-color: " + color +
+			"; -fx-text-fill: #FFFFFF; -fx-font-size: 16px; -fx-font-weight: bold;"
+		);
 		button.setPrefWidth(300);
 		button.setPrefHeight(80);
 		return button;
 	}
 	
+	// Create delivery card with status update option
 	private static VBox createDeliveryCard(Delivery delivery, Stage stage, Courier courier) {
 		VBox card = new VBox(12);
 		card.setPadding(new Insets(20));
@@ -159,52 +172,45 @@ public class CourierWindow {
 		HBox actionBox = new HBox(15);
 		actionBox.setAlignment(Pos.CENTER_LEFT);
 		
+		// Status selection
 		ComboBox<String> statusCombo = new ComboBox<>();
 		statusCombo.getItems().addAll("Pending", "In Progress", "Delivered");
 		statusCombo.setValue(delivery.getStatus());
-		statusCombo.setStyle("-fx-font-size: 13px;");
 		
 		Button updateButton = new Button("Update Status");
-		updateButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-padding: 8px 15px; -fx-cursor: hand;");
 		
+		// Update delivery status
 		updateButton.setOnAction(e -> {
 			String newStatus = statusCombo.getValue();
-			String error = DeliveryHandler.editDeliveryStatus(delivery.getIdOrder(), courier.getIdUser(), newStatus);
+			String error = DeliveryHandler.editDeliveryStatus(
+				delivery.getIdOrder(),
+				courier.getIdUser(),
+				newStatus
+			);
 			
 			if (error != null) {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setTitle("Error");
-				alert.setContentText(error);
-				alert.showAndWait();
+				new Alert(Alert.AlertType.ERROR, error).showAndWait();
 			} else {
-				Alert alert = new Alert(Alert.AlertType.INFORMATION);
-				alert.setTitle("Success");
-				alert.setContentText("Delivery status updated!");
-				alert.showAndWait();
+				new Alert(Alert.AlertType.INFORMATION, "Delivery status updated!").showAndWait();
 				showDeliveries(stage, courier);
 			}
 		});
 		
-		actionBox.getChildren().addAll(new Label("Updated to:"), statusCombo, updateButton);
-		
+		actionBox.getChildren().addAll(new Label("Update to:"), statusCombo, updateButton);
 		card.getChildren().addAll(orderLabel, statusLabel, new Separator(), actionBox);
+		
 		return card;
 	}
 	
+	// Get color based on delivery status
 	private static Color getStatusColor(String status) {
 		switch (status) {
 			case "Pending":
-				
 				return Color.ORANGE;
-			
 			case "In Progress":
-				
 				return Color.ORANGE;
-			
 			case "Delivered":
-				
 				return Color.GREEN;
-	
 			default:
 				return Color.GRAY;
 		}
