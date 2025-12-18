@@ -7,14 +7,17 @@ import java.sql.SQLException;
 
 import model.User;
 
+// Data Access class for User table
 public class UserDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public UserDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get user data by user ID
 	public User getUser(String idUser) {
 		String query = "SELECT * FROM User WHERE idUser = ?";
 		try {
@@ -22,8 +25,17 @@ public class UserDA {
 			ps.setString(1, idUser);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create User object if data is found
 			if (rs.next()) {
-				return new User(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("role"));
+				return new User(
+                    rs.getString("idUser"),
+                    rs.getString("fullName"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("role")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting user by ID: " + idUser + ".");
@@ -32,6 +44,7 @@ public class UserDA {
 		return null;
 	}
 	
+    // Get user data using email
 	public User getUserByEmail(String email) {
 		String query = "SELECT * FROM User WHERE email = ?";
 		try {
@@ -39,8 +52,17 @@ public class UserDA {
 			ps.setString(1, email);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create User object if data is found
 			if (rs.next()) {
-				return new User(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("role"));
+				return new User(
+                    rs.getString("idUser"),
+                    rs.getString("fullName"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("role")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting user by email: " + email + ".");
@@ -49,6 +71,7 @@ public class UserDA {
 		return null;
 	}
 	
+    // Save new user data into database
 	public boolean saveUser(User user) {
 		String query = "INSERT INTO User VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try {
@@ -73,6 +96,7 @@ public class UserDA {
 		return false;
 	}
 	
+    // Update existing user data
 	public boolean updateUser(User user) {
 		String query = "UPDATE User SET fullName = ?, email = ?, password = ?, phone = ?, address = ? WHERE idUser = ?";
 		try {
@@ -96,6 +120,7 @@ public class UserDA {
 		return false;
 	}
 	
+    // Delete user from database
 	public boolean deleteUser(String idUser) {
 		String query = "DELETE FROM User WHERE idUser = ?";
 		try {
