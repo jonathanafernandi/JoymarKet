@@ -9,14 +9,17 @@ import java.util.List;
 
 import model.OrderHeader;
 
+// Data Access class for OrderHeader table
 public class OrderHeaderDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public OrderHeaderDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get order header by order ID
 	public OrderHeader getOrderHeader(String idOrder) {
 		String query = "SELECT * FROM OrderHeader WHERE idOrder = ?";
 		try {
@@ -24,8 +27,16 @@ public class OrderHeaderDA {
 			ps.setString(1, idOrder);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create OrderHeader object if data is found
 			if (rs.next()) {
-				return new OrderHeader(rs.getString("idOrder"), rs.getString("idCustomer"), rs.getString("idPromo"), rs.getString("status"), rs.getTimestamp("orderedAt"), rs.getDouble("totalAmount"));
+				return new OrderHeader(
+                    rs.getString("idOrder"),
+                    rs.getString("idCustomer"),
+                    rs.getString("idPromo"),
+                    rs.getString("status"),
+                    rs.getTimestamp("orderedAt"),
+                    rs.getDouble("totalAmount")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting order header: " + idOrder + ".");
@@ -34,6 +45,7 @@ public class OrderHeaderDA {
 		return null;
 	}
 	
+    // Get order header for a specific customer
 	public OrderHeader getCustomerOrderHeader(String idOrder, String idCustomer) {
 		String query = "SELECT * FROM OrderHeader WHERE idOrder = ? AND idCustomer = ?";
 		try {
@@ -42,8 +54,16 @@ public class OrderHeaderDA {
 			ps.setString(2, idCustomer);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create OrderHeader object if data is found
 			if (rs.next()) {
-				return new OrderHeader(rs.getString("idOrder"), rs.getString("idCustomer"), rs.getString("idPromo"), rs.getString("status"), rs.getTimestamp("orderedAt"), rs.getDouble("totalAmount"));
+				return new OrderHeader(
+                    rs.getString("idOrder"),
+                    rs.getString("idCustomer"),
+                    rs.getString("idPromo"),
+                    rs.getString("status"),
+                    rs.getTimestamp("orderedAt"),
+                    rs.getDouble("totalAmount")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting customer order header.");
@@ -52,6 +72,7 @@ public class OrderHeaderDA {
 		return null;
 	}
 	
+    // Get all orders made by a specific customer
 	public List<OrderHeader> getCustomerOrders(String idCustomer) {
 		List<OrderHeader> orders = new ArrayList<>();
 		String query = "SELECT * FROM OrderHeader WHERE idCustomer = ? ORDER BY orderedAt DESC";
@@ -60,10 +81,17 @@ public class OrderHeaderDA {
 			ps.setString(1, idCustomer);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each order from result set
 			while (rs.next()) {
-				OrderHeader order = new OrderHeader(rs.getString("idOrder"), rs.getString("idCustomer"), rs.getString("idPromo"), rs.getString("status"), rs.getTimestamp("orderedAt"), rs.getDouble("totalAmount"));
+				OrderHeader order = new OrderHeader(
+                    rs.getString("idOrder"),
+                    rs.getString("idCustomer"),
+                    rs.getString("idPromo"),
+                    rs.getString("status"),
+                    rs.getTimestamp("orderedAt"),
+                    rs.getDouble("totalAmount")
+                );
 				orders.add(order);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting customer orders.");
@@ -72,6 +100,7 @@ public class OrderHeaderDA {
 		return orders;
 	}
 	
+    // Get all orders in the system
 	public List<OrderHeader> getAllOrders() {
 		List<OrderHeader> orders = new ArrayList<>();
 		String query = "SELECT * FROM OrderHeader ORDER BY orderedAt DESC";
@@ -79,10 +108,17 @@ public class OrderHeaderDA {
 			PreparedStatement ps = connection.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each order from result set
 			while (rs.next()) {
-				OrderHeader order = new OrderHeader(rs.getString("idOrder"), rs.getString("idCustomer"), rs.getString("idPromo"), rs.getString("status"), rs.getTimestamp("orderedAt"), rs.getDouble("totalAmount"));
+				OrderHeader order = new OrderHeader(
+                    rs.getString("idOrder"),
+                    rs.getString("idCustomer"),
+                    rs.getString("idPromo"),
+                    rs.getString("status"),
+                    rs.getTimestamp("orderedAt"),
+                    rs.getDouble("totalAmount")
+                );
 				orders.add(order);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting all orders.");
@@ -91,6 +127,7 @@ public class OrderHeaderDA {
 		return orders;
 	}
 	
+    // Save new order header into database
 	public boolean saveOrderHeader(OrderHeader orderHeader) {
 		String query = "INSERT INTO OrderHeader VALUES (?, ?, ?, ?, ?, ?)";
 		try {
@@ -114,6 +151,7 @@ public class OrderHeaderDA {
 		return false;
 	}
 	
+    // Update order status
 	public boolean updateOrderStatus(String idOrder, String newStatus) {
 		String query = "UPDATE OrderHeader SET status = ? WHERE idOrder = ?";
 		try {
@@ -133,6 +171,7 @@ public class OrderHeaderDA {
 		return false;
 	}
 	
+    // Generate new order ID with OR prefix
 	public synchronized String generateOrderID() {
 		try {
 			String query = "SELECT idOrder FROM OrderHeader WHERE idOrder LIKE 'OR%' ORDER BY idOrder DESC LIMIT 1";
@@ -142,6 +181,7 @@ public class OrderHeaderDA {
 			
 			int nextNumber = 1;
 			
+            // Get last order ID and increment it
 			if (rs.next()) {
 				String lastID = rs.getString("idOrder");
 				String numberPart = lastID.substring(2);
@@ -149,10 +189,10 @@ public class OrderHeaderDA {
 				nextNumber = currentNumber + 1;
 			}
 			
+            // Format ID to 3 digits
 			String formattedNumber = String.valueOf(nextNumber);
 			while (formattedNumber.length() < 3) {
 				formattedNumber = "0" + formattedNumber;
-				
 			}
 			
 			return "OR" + formattedNumber;
