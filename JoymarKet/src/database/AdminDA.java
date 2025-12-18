@@ -7,14 +7,17 @@ import java.sql.SQLException;
 
 import model.Admin;
 
+// Data Access class for Admin table
 public class AdminDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public AdminDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get admin data by admin ID
 	public Admin getAdmin(String idAdmin) {
 		String query = "SELECT u.*, a.emergencyContact FROM User u JOIN Admin a ON u.idUser = a.idAdmin WHERE u.idUser = ?";
 		try {
@@ -22,8 +25,18 @@ public class AdminDA {
 			ps.setString(1, idAdmin);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create Admin object if data is found
 			if (rs.next()) {
-				return new Admin(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("role"), rs.getString("emergencyContact"));
+				return new Admin(
+                    rs.getString("idUser"),
+                    rs.getString("fullName"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("role"),
+                    rs.getString("emergencyContact")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting admin: " + idAdmin + ".");
@@ -32,6 +45,7 @@ public class AdminDA {
 		return null;
 	}
 	
+    // Save new admin data into database
 	public boolean saveAdmin(Admin admin) {
 		String query = "INSERT INTO Admin VALUES (?, ?)";
 		try {
@@ -51,6 +65,7 @@ public class AdminDA {
 		return false;
 	}
 	
+    // Update existing admin data
 	public boolean updateAdmin(Admin admin) {
 		String query = "UPDATE Admin SET emergencyContact = ? WHERE idAdmin = ?";
 		try {
