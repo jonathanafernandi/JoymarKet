@@ -9,14 +9,17 @@ import java.util.List;
 
 import model.Delivery;
 
+// Data Access class for Delivery table
 public class DeliveryDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public DeliveryDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get a specific delivery by order ID and courier ID
 	public Delivery getDelivery(String idOrder, String idCourier) {
 		String query = "SELECT * FROM Delivery WHERE idOrder = ? AND idCourier = ?";
 		try {
@@ -25,8 +28,13 @@ public class DeliveryDA {
 			ps.setString(2, idCourier);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create Delivery object if data is found
 			if (rs.next()) {
-				return new Delivery(rs.getString("idOrder"), rs.getString("idCourier"), rs.getString("status"));
+				return new Delivery(
+                    rs.getString("idOrder"),
+                    rs.getString("idCourier"),
+                    rs.getString("status")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting delivery.");
@@ -35,6 +43,7 @@ public class DeliveryDA {
 		return null;
 	}
 	
+    // Get all deliveries from database
 	public List<Delivery> getAllDeliveries() {
 		List<Delivery> deliveries = new ArrayList<>();
 		String query = "SELECT * FROM Delivery";
@@ -42,10 +51,14 @@ public class DeliveryDA {
 			PreparedStatement ps = connection.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each delivery record
 			while (rs.next()) {
-				Delivery delivery = new Delivery(rs.getString("idOrder"), rs.getString("idCourier"), rs.getString("status"));
+				Delivery delivery = new Delivery(
+                    rs.getString("idOrder"),
+                    rs.getString("idCourier"),
+                    rs.getString("status")
+                );
 				deliveries.add(delivery);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting all deliveries.");
@@ -54,6 +67,7 @@ public class DeliveryDA {
 		return deliveries;
 	}
 	
+    // Get all deliveries assigned to a specific courier
 	public List<Delivery> getCourierDeliveries(String idCourier) {
 		List<Delivery> deliveries = new ArrayList<>();
 		String query = "SELECT * FROM Delivery WHERE idCourier = ?";
@@ -62,10 +76,14 @@ public class DeliveryDA {
 			ps.setString(1, idCourier);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each delivery record for courier
 			while (rs.next()) {
-				Delivery delivery = new Delivery(rs.getString("idOrder"), rs.getString("idCourier"), rs.getString("status"));
+				Delivery delivery = new Delivery(
+                    rs.getString("idOrder"),
+                    rs.getString("idCourier"),
+                    rs.getString("status")
+                );
 				deliveries.add(delivery);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting courier deliveries.");
@@ -74,6 +92,7 @@ public class DeliveryDA {
 		return deliveries;
 	}
 	
+    // Save new delivery record
 	public boolean saveDelivery(Delivery delivery) {
 		String query = "INSERT INTO Delivery VALUES (?, ?, ?)";
 		try {
@@ -94,6 +113,7 @@ public class DeliveryDA {
 		return false;
 	}
 	
+    // Update delivery status
 	public boolean updateDeliveryStatus(String idOrder, String idCourier, String newStatus) {
 		String query = "UPDATE Delivery SET status = ? WHERE idOrder = ? AND idCourier = ?";
 		try {
