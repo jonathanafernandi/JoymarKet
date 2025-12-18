@@ -9,14 +9,17 @@ import java.util.List;
 
 import model.CartItem;
 
+// Data Access class for CartItem table
 public class CartItemDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public CartItemDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get all cart items for a specific customer
 	public List<CartItem> getCartItems(String idCustomer) {
 		List<CartItem> cartItems = new ArrayList<>();
 		String query = "SELECT * FROM CartItem WHERE idCustomer = ?";
@@ -25,10 +28,14 @@ public class CartItemDA {
 			ps.setString(1, idCustomer);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each cart item from result set
 			while (rs.next()) {
-				CartItem cartItem = new CartItem(rs.getString("idCustomer"), rs.getString("idProduct"), rs.getInt("count"));
+				CartItem cartItem = new CartItem(
+                    rs.getString("idCustomer"),
+                    rs.getString("idProduct"),
+                    rs.getInt("count")
+                );
 				cartItems.add(cartItem);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting cart items for customer: " + idCustomer + ".");
@@ -37,6 +44,7 @@ public class CartItemDA {
 		return cartItems;
 	}
 	
+    // Get a specific cart item by customer and product
 	public CartItem getCartItem(String idCustomer, String idProduct) {
 		String query = "SELECT * FROM CartItem WHERE idCustomer = ? AND idProduct = ?";
 		try {
@@ -45,8 +53,13 @@ public class CartItemDA {
 			ps.setString(2, idProduct);
 			ResultSet rs = ps.executeQuery();
 			
+            // Return cart item if found
 			if (rs.next()) {
-				return new CartItem(rs.getString("idCustomer"), rs.getString("idProduct"), rs.getInt("count"));
+				return new CartItem(
+                    rs.getString("idCustomer"),
+                    rs.getString("idProduct"),
+                    rs.getInt("count")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting cart item.");
@@ -55,6 +68,7 @@ public class CartItemDA {
 		return null;
 	}
 	
+    // Save new cart item into database
 	public boolean saveCartItem(CartItem cartItem) {
 		String query = "INSERT INTO CartItem VALUES (?, ?, ?)";
 		try {
@@ -75,6 +89,7 @@ public class CartItemDA {
 		return false;
 	}
 	
+    // Update quantity of an existing cart item
 	public boolean updateCartItem(String idCustomer, String idProduct, int newCount) {
 		String query = "UPDATE CartItem SET count = ? WHERE idCustomer = ? AND idProduct = ?";
 		try {
@@ -95,6 +110,7 @@ public class CartItemDA {
 		return false;
 	}
 	
+    // Delete a cart item from database
 	public boolean deleteCartItem(String idCustomer, String idProduct) {
 		String query = "DELETE FROM CartItem WHERE idCustomer = ? AND idProduct = ?";
 		try {
@@ -114,6 +130,7 @@ public class CartItemDA {
 		return false;
 	}
 	
+    // Remove all cart items for a customer
 	public boolean clearCart(String idCustomer) {
 		String query = "DELETE FROM CartItem WHERE idCustomer = ?";
 		try {
