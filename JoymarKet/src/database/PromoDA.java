@@ -9,14 +9,17 @@ import java.util.List;
 
 import model.Promo;
 
+// Data Access class for Promo table
 public class PromoDA {
 
 	private Connection connection;
 	
+    // Initialize database connection
 	public PromoDA() {
 		this.connection = DatabaseConnection.getInstance().getConnection();
 	}
 	
+    // Get promo data using promo code
 	public Promo getPromoByCode(String code) {
 		String query = "SELECT * FROM Promo WHERE code = ?";
 		try {
@@ -24,8 +27,14 @@ public class PromoDA {
 			ps.setString(1, code);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create Promo object if data is found
 			if (rs.next()) {
-				return new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
+				return new Promo(
+                    rs.getString("idPromo"),
+                    rs.getString("code"),
+                    rs.getString("headline"),
+                    rs.getDouble("discountPercentage")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting promo by code: " + code + ".");
@@ -34,6 +43,7 @@ public class PromoDA {
 		return null;
 	}
 	
+    // Get promo data by promo ID
 	public Promo getPromo(String idPromo) {
 		String query = "SELECT * FROM Promo WHERE idPromo = ?";
 		try {
@@ -41,8 +51,14 @@ public class PromoDA {
 			ps.setString(1, idPromo);
 			ResultSet rs = ps.executeQuery();
 			
+            // Create Promo object if data is found
 			if (rs.next()) {
-				return new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
+				return new Promo(
+                    rs.getString("idPromo"),
+                    rs.getString("code"),
+                    rs.getString("headline"),
+                    rs.getDouble("discountPercentage")
+                );
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting promo: " + idPromo);
@@ -51,6 +67,7 @@ public class PromoDA {
 		return null;
 	}
 	
+    // Get all promo data from database
 	public List<Promo> getAllPromos() {
 		List<Promo> promos = new ArrayList<>();
 		String query = "SELECT * FROM Promo";
@@ -58,10 +75,15 @@ public class PromoDA {
 			PreparedStatement ps = connection.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			
+            // Read each promo from result set
 			while (rs.next()) {
-				Promo promo = new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
+				Promo promo = new Promo(
+                    rs.getString("idPromo"),
+                    rs.getString("code"),
+                    rs.getString("headline"),
+                    rs.getDouble("discountPercentage")
+                );
 				promos.add(promo);
-				
 			}
 		} catch (SQLException e) {
 			System.err.println("Error getting all promos.");
@@ -70,6 +92,7 @@ public class PromoDA {
 		return promos;
 	}
 	
+    // Save new promo data into database
 	public boolean savePromo(Promo promo) {
 		String query = "INSERT INTO Promo VALUES (?, ?, ?, ?)";
 		try {
