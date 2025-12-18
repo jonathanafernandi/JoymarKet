@@ -260,5 +260,5 @@ public class CartItemWindow {
 	private static String formatCurrency(double amount) {
 		return NumberFormat.getNumberInstance(new Locale("id", "ID")).format(amount);
 	}
-
+ 
 }
