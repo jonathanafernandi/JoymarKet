@@ -114,6 +114,8 @@ public class CourierWindow {
 		
 		// Back button
 		Button backButton = new Button("Back to Dashboard");
+		backButton.setStyle("-fx-background-color: #607D8B; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-cursor: hand;");
+		
 		backButton.setOnAction(e -> showCourierDashboard(stage, courier));
 		
 		centerBox.getChildren().add(backButton);
@@ -147,11 +149,8 @@ public class CourierWindow {
 	// Helper method to create menu buttons
 	private static Button createMenuButton(String text, String color) {
 		Button button = new Button(text);
-		button.setStyle(
-			"-fx-background-color: " + color +
-			"; -fx-text-fill: #FFFFFF; -fx-font-size: 16px; -fx-font-weight: bold;"
-		);
-		button.setPrefWidth(300);
+		button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: #FFFFFF; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 20px 40px; -fx-background-radius: 8; -fx-cursor: hand;");
+		button.setPrefWidth(250);
 		button.setPrefHeight(80);
 		return button;
 	}
@@ -172,33 +171,35 @@ public class CourierWindow {
 		HBox actionBox = new HBox(15);
 		actionBox.setAlignment(Pos.CENTER_LEFT);
 		
-		// Status selection
 		ComboBox<String> statusCombo = new ComboBox<>();
 		statusCombo.getItems().addAll("Pending", "In Progress", "Delivered");
 		statusCombo.setValue(delivery.getStatus());
+		statusCombo.setStyle("-fx-font-size: 13px;");
 		
 		Button updateButton = new Button("Update Status");
+		updateButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-padding: 8px 15px; -fx-cursor: hand;");
 		
-		// Update delivery status
 		updateButton.setOnAction(e -> {
 			String newStatus = statusCombo.getValue();
-			String error = DeliveryHandler.editDeliveryStatus(
-				delivery.getIdOrder(),
-				courier.getIdUser(),
-				newStatus
-			);
+			String error = DeliveryHandler.editDeliveryStatus(delivery.getIdOrder(), courier.getIdUser(), newStatus);
 			
 			if (error != null) {
-				new Alert(Alert.AlertType.ERROR, error).showAndWait();
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setContentText(error);
+				alert.showAndWait();
 			} else {
-				new Alert(Alert.AlertType.INFORMATION, "Delivery status updated!").showAndWait();
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("Success");
+				alert.setContentText("Delivery status updated!");
+				alert.showAndWait();
 				showDeliveries(stage, courier);
 			}
 		});
 		
-		actionBox.getChildren().addAll(new Label("Update to:"), statusCombo, updateButton);
-		card.getChildren().addAll(orderLabel, statusLabel, new Separator(), actionBox);
+		actionBox.getChildren().addAll(new Label("Updated to:"), statusCombo, updateButton);
 		
+		card.getChildren().addAll(orderLabel, statusLabel, new Separator(), actionBox);
 		return card;
 	}
 	

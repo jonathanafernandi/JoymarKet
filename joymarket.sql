@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2025 at 04:58 PM
+-- Generation Time: Dec 19, 2025 at 01:12 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -83,7 +83,27 @@ INSERT INTO `cartitem` (`idCustomer`, `idProduct`, `count`) VALUES
 ('CU002', 'PD013', 1),
 ('CU002', 'PD016', 1),
 ('CU003', 'PD018', 2),
-('CU003', 'PD020', 1);
+('CU003', 'PD020', 1),
+('CU004', 'PD001', 1),
+('CU004', 'PD002', 1),
+('CU004', 'PD003', 1),
+('CU004', 'PD004', 1),
+('CU004', 'PD005', 1),
+('CU004', 'PD006', 1),
+('CU004', 'PD007', 1),
+('CU004', 'PD008', 1),
+('CU004', 'PD009', 1),
+('CU004', 'PD010', 1),
+('CU004', 'PD011', 1),
+('CU004', 'PD012', 1),
+('CU004', 'PD013', 1),
+('CU004', 'PD014', 1),
+('CU004', 'PD015', 1),
+('CU004', 'PD016', 1),
+('CU004', 'PD017', 1),
+('CU004', 'PD018', 1),
+('CU004', 'PD019', 1),
+('CU004', 'PD020', 1);
 
 -- --------------------------------------------------------
 
@@ -138,7 +158,8 @@ CREATE TABLE `customer` (
 INSERT INTO `customer` (`idCustomer`, `balance`) VALUES
 ('CU001', 1000000),
 ('CU002', 750000),
-('CU003', 500000);
+('CU003', 500000),
+('CU004', 1000000);
 
 -- --------------------------------------------------------
 
@@ -168,7 +189,8 @@ CREATE TABLE `delivery` (
 INSERT INTO `delivery` (`idOrder`, `idCourier`, `status`) VALUES
 ('OR001', 'CO001', 'Delivered'),
 ('OR002', 'CO002', 'In Progress'),
-('OR004', 'CO002', 'Delivered');
+('OR004', 'CO002', 'Delivered'),
+('OR006', 'CO002', 'Pending');
 
 -- --------------------------------------------------------
 
@@ -207,7 +229,27 @@ INSERT INTO `orderdetail` (`idOrder`, `idProduct`, `qty`) VALUES
 ('OR004', 'PD017', 2),
 ('OR004', 'PD018', 1),
 ('OR005', 'PD007', 2),
-('OR005', 'PD011', 2);
+('OR005', 'PD011', 2),
+('OR006', 'PD001', 1),
+('OR006', 'PD002', 1),
+('OR006', 'PD003', 1),
+('OR006', 'PD004', 1),
+('OR006', 'PD005', 1),
+('OR006', 'PD006', 1),
+('OR006', 'PD007', 1),
+('OR006', 'PD008', 1),
+('OR006', 'PD009', 1),
+('OR006', 'PD010', 1),
+('OR006', 'PD011', 1),
+('OR006', 'PD012', 1),
+('OR006', 'PD013', 1),
+('OR006', 'PD014', 1),
+('OR006', 'PD015', 1),
+('OR006', 'PD016', 1),
+('OR006', 'PD017', 1),
+('OR006', 'PD018', 1),
+('OR006', 'PD019', 1),
+('OR006', 'PD020', 1);
 
 -- --------------------------------------------------------
 
@@ -242,7 +284,8 @@ INSERT INTO `orderheader` (`idOrder`, `idCustomer`, `idPromo`, `status`, `ordere
 ('OR002', 'CU001', NULL, 'In Progress', '2025-12-03 14:20:00', 75000),
 ('OR003', 'CU002', 'PM002', 'Pending', '2025-12-04 09:15:00', 160000),
 ('OR004', 'CU003', NULL, 'Delivered', '2025-11-28 16:45:00', 250000),
-('OR005', 'CU003', 'PM001', 'Pending', '2025-12-05 11:00:00', 180000);
+('OR005', 'CU003', 'PM001', 'Pending', '2025-12-05 11:00:00', 180000),
+('OR006', 'CU004', 'PM004', 'Delivered', '2025-12-19 05:17:32', 637500);
 
 -- --------------------------------------------------------
 
@@ -268,26 +311,26 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`idProduct`, `name`, `price`, `stock`, `category`) VALUES
-('PD001', 'Milk 1L', 15000, 50, 'Dairy'),
-('PD002', 'Yogurt 500g', 25000, 30, 'Dairy'),
-('PD003', 'Cheese 200g', 45000, 20, 'Dairy'),
-('PD004', 'Butter 250g', 30000, 25, 'Dairy'),
-('PD005', 'Chicken Breast 500g', 35000, 30, 'Meat'),
-('PD006', 'Beef Steak 300g', 75000, 15, 'Meat'),
-('PD007', 'Pork Chop 400g', 55000, 20, 'Meat'),
-('PD008', 'Lamb Chop 500g', 95000, 10, 'Meat'),
-('PD009', 'Apple 1kg', 45000, 40, 'Fruits'),
-('PD010', 'Banana 1kg', 20000, 50, 'Fruits'),
-('PD011', 'Orange 1kg', 35000, 35, 'Fruits'),
-('PD012', 'Strawberry 500g', 55000, 25, 'Fruits'),
-('PD013', 'Carrot 500g', 12000, 45, 'Vegetables'),
-('PD014', 'Broccoli 300g', 18000, 30, 'Vegetables'),
-('PD015', 'Spinach 250g', 10000, 40, 'Vegetables'),
-('PD016', 'Tomato 500g', 15000, 50, 'Vegetables'),
-('PD017', 'Salmon Fillet 300g', 85000, 15, 'Seafood'),
-('PD018', 'Shrimp 500g', 65000, 20, 'Seafood'),
-('PD019', 'Tuna Fillet 250g', 70000, 18, 'Seafood'),
-('PD020', 'Squid 400g', 45000, 25, 'Seafood');
+('PD001', 'Milk 1L', 15000, 100, 'Dairy'),
+('PD002', 'Yogurt 500g', 25000, 29, 'Dairy'),
+('PD003', 'Cheese 200g', 45000, 19, 'Dairy'),
+('PD004', 'Butter 250g', 30000, 24, 'Dairy'),
+('PD005', 'Chicken Breast 500g', 35000, 29, 'Meat'),
+('PD006', 'Beef Steak 300g', 75000, 14, 'Meat'),
+('PD007', 'Pork Chop 400g', 55000, 19, 'Meat'),
+('PD008', 'Lamb Chop 500g', 95000, 9, 'Meat'),
+('PD009', 'Apple 1kg', 45000, 39, 'Fruits'),
+('PD010', 'Banana 1kg', 20000, 49, 'Fruits'),
+('PD011', 'Orange 1kg', 35000, 34, 'Fruits'),
+('PD012', 'Strawberry 500g', 55000, 24, 'Fruits'),
+('PD013', 'Carrot 500g', 12000, 44, 'Vegetables'),
+('PD014', 'Broccoli 300g', 18000, 29, 'Vegetables'),
+('PD015', 'Spinach 250g', 10000, 39, 'Vegetables'),
+('PD016', 'Tomato 500g', 15000, 49, 'Vegetables'),
+('PD017', 'Salmon Fillet 300g', 85000, 14, 'Seafood'),
+('PD018', 'Shrimp 500g', 65000, 19, 'Seafood'),
+('PD019', 'Tuna Fillet 250g', 70000, 17, 'Seafood'),
+('PD020', 'Squid 400g', 45000, 24, 'Seafood');
 
 -- --------------------------------------------------------
 
@@ -351,7 +394,8 @@ INSERT INTO `user` (`idUser`, `fullName`, `email`, `password`, `phone`, `address
 ('CO003', 'Evan Julian Fonbeth', 'evan.courier@gmail.com', 'Courier@Evan', '0215345832', 'Jl. K. H. Syahdan No.9, RT 006/RW 012, Kel Palmerah, Kecamatan Palmerah, Jakarta Barat, Provinsi DKI Jakarta, Indonesia', 'Courier'),
 ('CU001', 'Aditya Eka Pratama', 'aditya.pratama@gmail.com', 'Adityapratama!', '0215345830', 'Jl. K. H. Syahdan No.9, RT 006/RW 012, Kel Palmerah, Kecamatan Palmerah, Jakarta Barat, Provinsi DKI Jakarta, Indonesia', 'Customer'),
 ('CU002', 'Jonathan Alvindo Fernandi', 'jonathan.fernandi@gmail.com', 'Jonathanfernandi!', '0215345831', 'Jl. K. H. Syahdan No.9, RT 006/RW 012, Kel Palmerah, Kecamatan Palmerah, Jakarta Barat, Provinsi DKI Jakarta, Indonesia', 'Customer'),
-('CU003', 'Evan Julian Fonbeth', 'evan.fonbeth@gmail.com', 'Evanfonbeth!', '0215345832', 'Jl. K. H. Syahdan No.9, RT 006/RW 012, Kel Palmerah, Kecamatan Palmerah, Jakarta Barat, Provinsi DKI Jakarta, Indonesia', 'Customer');
+('CU003', 'Evan Julian Fonbeth', 'evan.fonbeth@gmail.com', 'Evanfonbeth!', '0215345832', 'Jl. K. H. Syahdan No.9, RT 006/RW 012, Kel Palmerah, Kecamatan Palmerah, Jakarta Barat, Provinsi DKI Jakarta, Indonesia', 'Customer'),
+('CU004', 'Evan Jonathan Aditya', 'evan.aditya@gmail.com', 'Evanaditya!', '0812345678', 'Jl. Kebon Jeruk No.27, RT 001/RW 009, Kel Kemanggisan, Kecamatan Palmerah, Jakarta Barat, Provinsi Daerah Khusus Ibukota Jakarta, 11530, Indonesia', 'Customer');
 
 --
 -- Indexes for dumped tables

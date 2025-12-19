@@ -95,6 +95,7 @@ public class AdminWindow {
 	private static void showAllOrders(Stage stage, Admin admin) {
 		BorderPane root = new BorderPane();
 		root.setStyle("-fx-background-color: #F5F5F5;");
+		
 		root.setTop(createTopBar(admin));
 		
 		VBox centerBox = new VBox(20);
@@ -105,9 +106,9 @@ public class AdminWindow {
 		
 		List<OrderHeader> orders = OrderHeaderHandler.getAllOrders();
 		
-		// If no orders exist
 		if (orders.isEmpty()) {
 			Label emptyLabel = new Label("No orders found.");
+			emptyLabel.setFont(Font.font("Arial", 16));
 			emptyLabel.setTextFill(Color.GRAY);
 			centerBox.getChildren().addAll(titleLabel, emptyLabel);
 		} else {
@@ -115,28 +116,32 @@ public class AdminWindow {
 			scrollPane.setFitToWidth(true);
 			
 			VBox orderList = new VBox(15);
+			orderList.setPadding(new Insets(10));
+			
 			for (OrderHeader order : orders) {
-				orderList.getChildren().add(createOrderCardForAdmin(order));
+				VBox orderCard = createOrderCardForAdmin(order);
+				orderList.getChildren().add(orderCard);
 			}
 			
 			scrollPane.setContent(orderList);
 			centerBox.getChildren().addAll(titleLabel, scrollPane);
 		}
 		
-		// Back button
 		Button backButton = new Button("Back to Dashboard");
+		backButton.setStyle("-fx-background-color: #607D8B; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-cursor: hand;");
 		backButton.setOnAction(e -> showAdminDashboard(stage, admin));
 		
 		centerBox.getChildren().add(backButton);
 		root.setCenter(centerBox);
 		
-		stage.setScene(new Scene(root, 900, 650));
+		Scene scene = new Scene(root, 900, 650);
+		stage.setScene(scene);
 	}
 	
-	// Show manage products page
 	private static void showManageProducts(Stage stage, Admin admin) {
 		BorderPane root = new BorderPane();
 		root.setStyle("-fx-background-color: #F5F5F5;");
+		
 		root.setTop(createTopBar(admin));
 		
 		VBox centerBox = new VBox(20);
@@ -151,27 +156,31 @@ public class AdminWindow {
 		scrollPane.setFitToWidth(true);
 		
 		VBox productList = new VBox(15);
+		productList.setPadding(new Insets(10));
+		
 		for (Product product : products) {
-			productList.getChildren().add(
-				createProductCardForAdmin(product, stage, admin)
-			);
+			VBox productCard = createProductCardForAdmin(product, stage, admin);
+			productList.getChildren().add(productCard);
 		}
 		
 		scrollPane.setContent(productList);
 		
 		Button backButton = new Button("Back to Dashboard");
+		backButton.setStyle("-fx-background-color: #607D8B; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-cursor: hand;");
 		backButton.setOnAction(e -> showAdminDashboard(stage, admin));
 		
 		centerBox.getChildren().addAll(titleLabel, scrollPane, backButton);
 		root.setCenter(centerBox);
 		
-		stage.setScene(new Scene(root, 900, 650));
+		Scene scene = new Scene(root, 900, 650);
+		stage.setScene(scene);
 	}
 	
 	// Show assign courier page
 	private static void showAssignCourier(Stage stage, Admin admin) {
 		BorderPane root = new BorderPane();
 		root.setStyle("-fx-background-color: #F5F5F5;");
+		
 		root.setTop(createTopBar(admin));
 		
 		VBox centerBox = new VBox(20);
@@ -181,72 +190,97 @@ public class AdminWindow {
 		titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 26));
 		
 		List<OrderHeader> orders = OrderHeaderHandler.getAllOrders();
+		
 		List<Courier> couriers = CourierHandler.getAllCouriers();
 		
-		// Form container
 		VBox formBox = new VBox(15);
 		formBox.setPadding(new Insets(25));
-		formBox.setStyle("-fx-background-color: #FFFFFF;");
+		formBox.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 8;");
+		
+		Label orderLabel = new Label("Select Order:");
+		orderLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 		
 		ComboBox<String> orderCombo = new ComboBox<>();
 		for (OrderHeader order : orders) {
-			orderCombo.getItems().add(order.getIdOrder() + " - " + order.getStatus());
+			orderCombo.getItems().add(order.getIdOrder() + " - " + order.getStatus() + " - Rp" + formatCurrency(order.getTotalAmount()));
 		}
+		orderCombo.setPromptText("Select an order");
+		orderCombo.setPrefWidth(550);
+		
+		Label courierLabel = new Label("Select Courier:");
+		courierLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 		
 		ComboBox<String> courierCombo = new ComboBox<>();
 		for (Courier courier : couriers) {
-			courierCombo.getItems().add(courier.getIdUser() + " - " + courier.getFullName());
+			courierCombo.getItems().add(courier.getIdUser() + " - " + courier.getFullName() + " (" + courier.getVehicleType() + ")");
 		}
+		courierCombo.setPromptText("Select a courier");
+		courierCombo.setPrefWidth(550);
 		
 		Label errorLabel = new Label();
 		errorLabel.setTextFill(Color.RED);
+		errorLabel.setWrapText(true);
 		errorLabel.setVisible(false);
 		
 		Button assignButton = new Button("Assign");
+		assignButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-padding: 10px 30px; -fx-cursor: hand;");
+		
 		assignButton.setOnAction(e -> {
-			if (orderCombo.getValue() == null || courierCombo.getValue() == null) {
+			String selectedOrder = orderCombo.getValue();
+			String selectedCourier = courierCombo.getValue();
+			
+			if (selectedOrder == null || selectedCourier == null) {
 				errorLabel.setText("Please select both order and courier.");
 				errorLabel.setVisible(true);
 				return;
 			}
 			
-			String idOrder = orderCombo.getValue().split(" - ")[0];
-			String idCourier = courierCombo.getValue().split(" - ")[0];
+			String idOrder = selectedOrder.split(" - ")[0];
+			String idCourier = selectedCourier.split(" - ")[0];
 			
 			String error = DeliveryHandler.assignCourierToOrder(idOrder, idCourier);
 			if (error != null) {
 				errorLabel.setText(error);
 				errorLabel.setVisible(true);
 			} else {
-				showAlert(Alert.AlertType.INFORMATION, "Success", "Courier assigned successfully!");
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("Success");
+				alert.setHeaderText(null);
+				alert.setContentText("Courier assigned successfully!");
+				alert.showAndWait();
 				showAdminDashboard(stage, admin);
 			}
 		});
 		
-		formBox.getChildren().addAll(orderCombo, courierCombo, errorLabel, assignButton);
+		formBox.getChildren().addAll(orderLabel, orderCombo, courierLabel, courierCombo, errorLabel, assignButton);
 		
 		Button backButton = new Button("Back to Dashboard");
+		backButton.setStyle("-fx-background-color: #607D8B; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-cursor: hand;");
 		backButton.setOnAction(e -> showAdminDashboard(stage, admin));
 		
 		centerBox.getChildren().addAll(titleLabel, formBox, backButton);
 		root.setCenter(centerBox);
 		
-		stage.setScene(new Scene(root, 900, 650));
+		Scene scene = new Scene(root, 900, 650);
+		stage.setScene(scene);
 	}
 	
 	// Create top navigation bar
 	private static HBox createTopBar(Admin admin) {
 		HBox topBar = new HBox(20);
 		topBar.setPadding(new Insets(15, 30, 15, 30));
+		topBar.setAlignment(Pos.CENTER_LEFT);
 		topBar.setStyle("-fx-background-color: #2196F3;");
 		
 		Label logoLabel = new Label("JoymarKet Admin");
+		logoLabel.setFont(Font.font("Arial", FontWeight.BOLD, 22));
 		logoLabel.setTextFill(Color.WHITE);
 		
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 		
 		Label userLabel = new Label(admin.getFullName());
+		userLabel.setFont(Font.font("Arial", 14));
 		userLabel.setTextFill(Color.WHITE);
 		
 		topBar.getChildren().addAll(logoLabel, spacer, userLabel);
@@ -337,8 +371,9 @@ public class AdminWindow {
 	// Helper method to create menu buttons
 	private static Button createMenuButton(String text, String color) {
 		Button button = new Button(text);
-		button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white;");
-		button.setPrefWidth(350);
+		button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: #FFFFFF; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 20px 40px; -fx-background-radius: 8; -fx-cursor: hand;");
+		button.setPrefWidth(250);
+		button.setPrefHeight(80);
 		return button;
 	}
 	
